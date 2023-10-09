@@ -87,3 +87,11 @@ RETURN
 CONCATENATEX(
     FILTER(_tabulka,[pocet dnu bez srazek] = max_pocet_dnu),
 dim_datumy[rok],", ")
+______________________________________________
+
+30 text tlacitka = 
+
+IF(
+    HASONEFILTER(dim_lokality[Lokalita]),
+    "Přejít na detail lokality "&SELECTEDVALUE(dim_lokality[Lokalita]),
+    "Kliknutím do tabulky vyber lokalitu")
