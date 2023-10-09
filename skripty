@@ -64,3 +64,26 @@ RETURN
         FILTER(_tabulka,
         [pocet dnu bez srazek] = max_pocet_vyskytu),
     data[mesic],", ")
+
+_____________________________________________
+
+28 datumy maximalnich srazek lokalita = 
+
+CONCATENATEX(
+    FILTER(data,data[Srazky] = MAX(data[Srazky])),
+data[Datum],", ",data[Datum],ASC)
+
+_______________________________________________
+
+29 roky nejvice dnu bez srazek = 
+
+VAR _tabulka = 
+ADDCOLUMNS(
+    ALL(dim_datumy[rok]),
+"pocet dnu bez srazek",
+CALCULATE(COUNT(data[Datum]),data[Srazky] = 0 && NOT ISBLANK(data[Srazky])))
+VAR max_pocet_dnu = MAXX(_tabulka,[pocet dnu bez srazek])
+RETURN
+CONCATENATEX(
+    FILTER(_tabulka,[pocet dnu bez srazek] = max_pocet_dnu),
+dim_datumy[rok],", ")
