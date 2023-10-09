@@ -26,3 +26,22 @@ CALCULATE(
     SUM(data[Srazky]),
     data[Lokalita] = "RUZYNE")
 RETURN _3
+____________________________________________
+
+19 minimalni a maximalni mesicni srazky = 
+-- tabulka srazek pro jednotlive roky daneho mesice
+-- respektujeme filtr mesice daneho vizualem
+VAR _tabulka = 
+    ADDCOLUMNS(
+    ALL(dim_datumy[rok]),
+    "suma srazek",
+    CALCULATE(SUM(data[Srazky])))
+-- minimalni a maximalni hodnoty ze sloupce suma srazek vlastni tabulky
+-- vytvorene v promenne _tabulka
+VAR _minimalni_srazky = MINX(_tabulka,[suma srazek])
+VAR _maximalni_srazky = MAXX(_tabulka,[suma srazek])
+RETURN
+    -- testujeme vice podminek, hledame podminku vracejici TRUE()
+    SWITCH(TRUE(),
+    SUM(data[Srazky]) = _minimalni_srazky,"GOLD",
+    SUM(data[Srazky]) = _maximalni_srazky,"CYAN")
