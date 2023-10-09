@@ -1,0 +1,28 @@
+01 ruseni filtru = 
+CALCULATE(
+SUM(data[Srazky]),ALL(data[rok]))
+
+______________________________________
+
+02 pridani filtru = 
+-- TAKHLE NE
+VAR _1 = 
+CALCULATE(
+    SUM(data[Srazky]),
+    FILTER(data,
+    data[Lokalita] = "RUZYNE")
+)
+-- TAKHLE ANO, POKUD NEFUNGUJE _3
+VAR _2 = 
+CALCULATE(
+    SUM(data[Srazky]),
+    FILTER(
+        ALL(data[Lokalita]),
+    data[Lokalita] = "RUZYNE"))
+
+-- TAKHLE ANO
+VAR _3 = 
+CALCULATE(
+    SUM(data[Srazky]),
+    data[Lokalita] = "RUZYNE")
+RETURN _3
