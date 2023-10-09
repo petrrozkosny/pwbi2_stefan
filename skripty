@@ -45,3 +45,22 @@ RETURN
     SWITCH(TRUE(),
     SUM(data[Srazky]) = _minimalni_srazky,"GOLD",
     SUM(data[Srazky]) = _maximalni_srazky,"CYAN")
+
+________________________________________________
+
+24 mesice s nejvetsim poctem dnu bez srazek ruzyne = 
+-- v danem roce
+VAR _tabulka = 
+    ADDCOLUMNS(
+        ALL(data[mesic]),
+    "pocet dnu bez srazek",
+    CALCULATE(
+        COUNT(data[Datum]),
+        data[Srazky] = 0,
+        NOT ISBLANK(data[Srazky])))
+VAR max_pocet_vyskytu = MAXX(_tabulka,[pocet dnu bez srazek])
+RETURN
+    CONCATENATEX(
+        FILTER(_tabulka,
+        [pocet dnu bez srazek] = max_pocet_vyskytu),
+    data[mesic],", ")
