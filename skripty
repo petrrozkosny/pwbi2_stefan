@@ -112,3 +112,15 @@ RETURN
 CONCATENATEX(
     datumy_max_srazek,[datum-hodnota],UNICHAR(10))
 
+____________________________________
+
+08 minimalni datum maximalni teploty v roce = 
+if(ISFILTERED(dim_datumy[rok]),
+-- v dane lokalite, zemi, roce
+CALCULATE(
+    MIN(data[Datum]),
+    FILTER(ALL(data[Teplota]),
+    data[Teplota] = 
+    -- maximalni teplota v dane zemi, lokalite, roce
+    MAX(data[Teplota])
+)),"jsem v totalu, nepočítám")
