@@ -209,3 +209,14 @@ if(
     -- pokud se rank sumy srazek v dane bunce rovna ci je mensi ranku vybraneho prurezem
     -- vracime barvu gold
     ,"gold")
+___________________________________________
+
+42 TOP3 teploty = 
+CONCATENATEX(
+FILTER(
+ADDCOLUMNS(
+    ALL(data[Teplota]),
+    "rank teploty",
+    RANKX(ALL(data[Teplota]),CALCULATE(MAX(data[Teplota])),,DESC)
+),
+[rank teploty] <=3),data[Teplota],", ",[rank teploty],ASC)
