@@ -220,3 +220,15 @@ ADDCOLUMNS(
     RANKX(ALL(data[Teplota]),CALCULATE(MAX(data[Teplota])),,DESC)
 ),
 [rank teploty] <=3),data[Teplota],", ",[rank teploty],ASC)
+
+____________________________________________________________________
+
+43 suma srazek TOP5 dnu = 
+SUMX(
+FILTER(
+ADDCOLUMNS(
+    ALL(data[Srazky]),
+"rank srazek",
+RANKX(ALL(data[Srazky]),CALCULATE(max(data[Srazky])),,DESC))
+,[rank srazek] <=5),
+data[Srazky])
