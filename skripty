@@ -95,3 +95,20 @@ IF(
     HASONEFILTER(dim_lokality[Lokalita]),
     "Přejít na detail lokality "&SELECTEDVALUE(dim_lokality[Lokalita]),
     "Kliknutím do tabulky vyber lokalitu")
+
+_______________________________________
+
+33 datumy max srazek = 
+
+VAR max_srazky = MAX(data[Srazky])
+
+VAR datumy_max_srazek = 
+ADDCOLUMNS(
+FILTER(data,data[Srazky] = max_srazky),
+"datum-hodnota",
+data[Datum] &" | "& data[Srazky])
+
+RETURN
+CONCATENATEX(
+    datumy_max_srazek,[datum-hodnota],UNICHAR(10))
+
