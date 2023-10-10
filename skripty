@@ -168,3 +168,44 @@ ADDCOLUMNS(
     IF([rank]<=3,dim_lokality[Lokalita],"ostatní")),
     [typ] <> "ostatní"),
 [suma srazek])
+
+____________________________________________
+
+41 pf topn srazek = 
+VAR _tabulka = 
+ADDCOLUMNS(
+    FILTER(
+    CALCULATETABLE(
+        ALL(data[rok],data[mesic],data[Lokalita]),
+        -- timto se zbavujeme filtru v rozsirene tabulce
+        ALL(dim_datumy[mesic],dim_datumy[rok]),ALL(dim_lokality[Lokalita])),-- nebo ALL(data)
+    data[Lokalita] IN VALUES(dim_lokality[Lokalita]))
+    ,"suma srazek",
+    -- funkce CALCULATE() jde radek po radku a pocita sumu srazek. Prochazi kazdy jeden radek
+    -- tabulky vracene funkci ALL(), ale pta (agreguje) se do tabulek filtrovanych vizualem,
+    -- proto znovu musíme použít modifikátor filtru, tj. funkci ALL()
+    CALCULATE(SUM(data[Srazky]),ALL(dim_datumy[mesic],dim_datumy[rok]),ALL(dim_lokality[Lokalita])))
+
+-- tabulka s dopocitanym sloupcem rank srazek
+VAR _tabulka_rank = 
+ADDCOLUMNS(
+    _tabulka,
+"rank srazek",
+RANKX(_tabulka,[suma srazek],,DESC))
+
+-- v danem roce, lokalite, mesici
+VAR suma_srazek = SUM(data[Srazky])
+
+VAR rank_suma_srazek =
+-- zde se ptame na maximalni rank dane sumy srazek. Protoze kazda suma srazek ma jediny rank
+-- tak je jedno, jestli se ptame pres MAXX(), MINX(), AVERAGEX()
+MAXX(
+    FILTER(_tabulka_rank,[suma srazek] = suma_srazek),
+[rank srazek])
+RETURN
+if(
+    rank_suma_srazek
+    <=topn_hodnoty[Hodnota parametru topn_hodnoty]
+    -- pokud se rank sumy srazek v dane bunce rovna ci je mensi ranku vybraneho prurezem
+    -- vracime barvu gold
+    ,"gold")
