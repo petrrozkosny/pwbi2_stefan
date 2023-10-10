@@ -124,3 +124,19 @@ CALCULATE(
     -- maximalni teplota v dane zemi, lokalite, roce
     MAX(data[Teplota])
 )),"jsem v totalu, nepočítám")
+
+
+_____________________________________________________
+
+
+36 nejsrazkovejsi roky lokality = 
+VAR _tabulka = 
+ADDCOLUMNS(
+    ALL(dim_datumy[rok]),
+"suma srazek",
+    CALCULATE(SUM(data[Srazky])))
+VAR _maximum = MAXX(_tabulka,[suma srazek])
+RETURN
+CONCATENATEX(
+    FILTER(_tabulka,[suma srazek] = _maximum),
+dim_datumy[rok],", ")
