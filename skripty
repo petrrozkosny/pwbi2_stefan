@@ -140,3 +140,31 @@ RETURN
 CONCATENATEX(
     FILTER(_tabulka,[suma srazek] = _maximum),
 dim_datumy[rok],", ")
+
+___________________________________________
+
+
+40 suma srazek TOP3 lokality = 
+
+
+VAR _tabulka = 
+ADDCOLUMNS(
+ALL(dim_lokality[Lokalita]),
+"suma srazek",
+CALCULATE(SUM(data[Srazky])))
+
+VAR _tabulka_rank = 
+ADDCOLUMNS(_tabulka,
+"rank",
+RANKX(
+    _tabulka,[suma srazek],,DESC))
+
+RETURN 
+SUMX(
+    FILTER(
+ADDCOLUMNS(
+    _tabulka_rank,
+    "typ",
+    IF([rank]<=3,dim_lokality[Lokalita],"ostatní")),
+    [typ] <> "ostatní"),
+[suma srazek])
